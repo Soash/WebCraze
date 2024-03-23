@@ -22,7 +22,7 @@ url = 'https://www.amazon.com/Best-Sellers-Audible-Books-Originals/zgbs/audible/
 driver.get(url)
 
 # Waiting for the page to load properly (adjust the sleep time as needed)
-time.sleep(10)
+time.sleep(5)
 
 # Creating BeautifulSoup object from the page source
 soup = BeautifulSoup(driver.page_source, 'html.parser')
@@ -43,9 +43,9 @@ driver.quit()
 
 for name, link in zip(cat_names, cat_links):
     # print(f'parsing {name}')
-    time.sleep(5)
     driver = webdriver.Chrome(service=service)
     driver.get(link)
+    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
     time.sleep(5)
 
     # Creating BeautifulSoup object from the page source of the category
@@ -58,23 +58,30 @@ for name, link in zip(cat_names, cat_links):
     prices = []
     images = []
 
-    # Finding all h2 elements with class 'elementor-heading-title'
-
     div_list = soup.find_all('div', {'id':'gridItemRoot'})
 
     for data in div_list:
-        book = data.find('div', class_='_cDEzb_p13n-sc-css-line-clamp-1_1Fn1y').text.strip()
+        book_element = data.find('div', class_='_cDEzb_p13n-sc-css-line-clamp-1_1Fn1y')
+        author_element = data.find('span', class_='a-color-base')
+        rating_element = data.find('span', class_='a-icon-alt')
+        price_element = data.find('span', class_='p13n-sc-price')
+
+        # Check if any of the elements are None
+        if None in (book_element, author_element, rating_element, price_element):
+            continue  # Skip this iteration if any element is missing
+
+        book = book_element.text.strip()
         books.append(book)
-        author = data.find('span', class_='a-color-base').text.strip()
+        author = author_element.text.strip()
         authors.append(author)
-        rating = data.find('span', class_='a-icon-alt').text.strip()
+        rating = rating_element.text.strip()
         ratings.append(rating)
 
         rating_elements = data.find('div', class_="a-icon-row").find_all('span', class_='a-size-small')
         rating_count = rating_elements[-1].text.strip()
         num_reviews.append(rating_count)
 
-        price = data.find('span', class_='p13n-sc-price').text.strip()
+        price = price_element.text.strip()
         prices.append(price)
         
         img = data.find('img', class_='a-dynamic-image p13n-sc-dynamic-image p13n-product-image')['src']
