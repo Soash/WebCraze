@@ -1,4 +1,4 @@
-git clone https://github.com/Soash/Sky_Loom_Bot.git
+git clone https://github.com/Soash/WebCraze.git
 cd .\Sky_Loom_Bot\
 
 python -m venv venv
