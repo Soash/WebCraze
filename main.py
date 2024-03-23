@@ -45,8 +45,12 @@ for name, link in zip(cat_names, cat_links):
     print(f'parsing {name}')
     time.sleep(5)
     driver = webdriver.Chrome(service=service)
+    print(link)
     driver.get(link)
     time.sleep(5)
+
+    # Creating BeautifulSoup object from the page source of the category
+    soup = BeautifulSoup(driver.page_source, 'html.parser')
 
     books = []
     authors = []
