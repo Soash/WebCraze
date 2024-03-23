@@ -42,10 +42,9 @@ data2.to_csv('cat.csv')
 driver.quit()
 
 for name, link in zip(cat_names, cat_links):
-    print(f'parsing {name}')
+    # print(f'parsing {name}')
     time.sleep(5)
     driver = webdriver.Chrome(service=service)
-    print(link)
     driver.get(link)
     time.sleep(5)
 
@@ -81,7 +80,7 @@ for name, link in zip(cat_names, cat_links):
         img = data.find('img', class_='a-dynamic-image p13n-sc-dynamic-image p13n-product-image')['src']
         images.append(img)
 
-    print(f'parsing {name} done')
+    print(f'parsing: {name} done')
 
     data = pd.DataFrame({'book':books, 'author':authors,'rating':ratings, 'num_reviews':num_reviews, 'price':prices, 'img':images})
     data.to_csv(f'{name}.csv')
